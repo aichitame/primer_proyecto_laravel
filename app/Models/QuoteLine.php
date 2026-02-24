@@ -46,12 +46,12 @@ class QuoteLine extends Model
         static::creating(function (QuoteLine $line){
             //Si no viene unit_price, lo copiamos del producto
             if(is_null($line->unit_price)){
-                $line->unit_price = (string) ($line->product()->value('price') ?? 0);
+                $line->unit_price = $line->product()->value('price');
             }
 
             //Si no viene tax_rate, lo copiamos del producto (si aplica)
             if(is_null($line->tax_rate)){
-                $line->tax_rate = (string) ($line->product()->value('tax_rate') ?? '0.00');
+                $line->tax_rate = $line->product()->value('tax_rate') ?? 0;
             }
         });
         static::saving(function(QuoteLine $line){
@@ -70,9 +70,7 @@ class QuoteLine extends Model
         $taxBase = $subtotal - $discountAmount;
         $taxAmount = $taxBase * ($taxRate / 100);
         $total = $taxBase + $taxAmount;
-
-
-        //Guardamos con 2 decimales en formato string
+        
         $this->subtotal = number_format($subtotal, 2, '.', '');
         $this->discount_amount = number_format($discountAmount, 2, '.', '');
         $this->tax_amount = number_format($taxAmount, 2, '.', '');

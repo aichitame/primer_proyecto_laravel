@@ -17,8 +17,6 @@ return new class extends Migration
             //Nombre del producto
             $table->string('name');
 
-            $table->boolean('active')->default('true');
-
             //Precio del producto (dinero = SIEMPRE decimal)
             $table->decimal('price', 12, 2);
 

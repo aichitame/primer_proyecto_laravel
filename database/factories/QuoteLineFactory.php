@@ -2,28 +2,31 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\Product;
+use App\Models\Quote;
 use App\Models\QuoteLine;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\QuoteLine>
- */
 class QuoteLineFactory extends Factory
 {
     protected $model = QuoteLine::class;
     public function definition(): array
     {
-        $product = \App\Models\Product::inRandomOrder()->first();
         return [
-            'product_id' => $product->id,
-            'quantity' => $this->faker->numberBetween(1, 5),
-            'unit_price' => $product->price,
-            'discount_percent' => $this->faker->randomFloat(2, 0, 20),
-            'tax_percent' => 21,
-            'subtotal' => 0, //se calcula después
-            'discount' => 0,
-            'tax' => 0,
+            'quote_id' => Quote::factory(),
+            'product_id' => Product::factory(),
+            'qty' => $this->faker->numberBetween(1, 5),
+
+            //Podemos pasarlos o dejarlos a null para que booted()->creating los copie
+            'unit_price' => null,
+            'discount_rate' => $this->faker->randomFloat(2, 0, 20),
+            'tax_rate' => null,
+
+            //Se calculan en saving()->recalc()
+            'subtotal' => 0,
+            'discount_amount' => 0,
+            'tax_amount' => 0,
             'total' => 0,
-        ];
+            ];
     }
 }

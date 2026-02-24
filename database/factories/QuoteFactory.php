@@ -2,22 +2,21 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Quote>
- */
 class QuoteFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
+
     public function definition(): array
     {
         return [
-            //
+            'user_id' => User::factory(),
+            'status' => 'draft',
+            'subtotal' => 0,
+            'discount_total' => 0,
+            'tax_total' => 0,
+            'total' => 0,
         ];
     }
 }

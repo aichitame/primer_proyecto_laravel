@@ -22,7 +22,7 @@ protected $casts = [
         return $this->hasMany(\App\Models\QuoteLine::class);
     }
 
-public function scopeActivity($query){
+public function scopeActive($query){
     return $query->where('active', true);
 }
 
