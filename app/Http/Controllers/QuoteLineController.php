@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreQuoteLineRequest;
 use App\Models\Quote;
 use App\Models\QuoteLine;
 use Illuminate\Http\Request;
+use App\Http\Requests\UpdateQuoteLineRequest;
 
 class QuoteLineController extends Controller
 {
-    public function store(Request $request, Quote $quote){
-        $data = $request->validate([
-            'product_id' => ['required', 'exists:products,id'],
-            'qty' => ['required', 'integer', 'min:1'],
-            'discount_rate' => ['nullable', 'numeric', 'min:0'],
-        ]);
+    public function store(StoreQuoteLineRequest $request, Quote $quote){
+        $this->authorize('update', $quote);
+
+        $data = $request->validated();
 
         $existingLine = $quote->lines()
         ->where('product_id', $data['product_id'])
@@ -46,15 +46,13 @@ class QuoteLineController extends Controller
         return redirect()->route('quotes.show', $quote);
     }
 
-    public function update(Request $request, Quote $quote, QuoteLine $line){
+    public function update(UpdateQuoteLineRequest $request, Quote $quote, QuoteLine $line){
+        $this->authorize('update', $quote);
         if($line->quote_id !== $quote->id){
             abort(404);
         }
 
-        $data = $request->validate([
-            'qty' => ['required', 'integer', 'min:1'],
-            'discount_rate' => ['nullable', 'numeric', 'min:0'],
-        ]);
+        $data = $request->validated();
 
         $line->qty= $data['qty'];
         $line->discount_rate = $data['discount_rate'] ?? $line->discount_rate;
@@ -69,6 +67,7 @@ class QuoteLineController extends Controller
     }
 
     public function destroy(Quote $quote, QuoteLine $line){
+        $this->authorize('update', $quote);
         if($line->quote_id !== $quote->id){
             abort(404);
         }
